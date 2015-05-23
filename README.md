@@ -29,4 +29,5 @@ After applying configuration changes you have to restart
 Explorer shell process (not only an explorer window).  
 Simply logoff and logon your windows session. 
 
-For further details check out the docs directory.
+For further details check out the wenpcfg/docs directory.
+To download and use wenpcfg then download wenpcfg.zip
