@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Windows Explorer Navigation Pane Configuration Tool")]
 [assembly: AssemblyDescription("Hides or shows nodes of libraries, favorites, network, computer and homegroup in the navigation pane in windows explorer and also in open- and saveFileDialogs introduced in Windows 7, Windows 8, Server 2008 R2 and Server 2012")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("SINN GmbH")]
+[assembly: AssemblyCompany("RIANTO")]
 [assembly: AssemblyProduct("Windows Explorer Navigation Pane Configuration Tool")]
-[assembly: AssemblyCopyright("Copyright © SINN GmbH 2013")]
+[assembly: AssemblyCopyright("Copyright © PRIANTO 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,5 +32,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("1.2.1.0")]
-[assembly: AssemblyFileVersion("1.2.1.0")]
+[assembly: AssemblyVersion("1.3.1.0")]
+[assembly: AssemblyFileVersion("1.3.1.0")]

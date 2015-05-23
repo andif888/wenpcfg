@@ -55,8 +55,29 @@ namespace Sinn.Wenpcfg
         private const string homegroup_hklm_syswow64 = @"SOFTWARE\Wow6432Node\Classes\CLSID\{B4FB3F98-C1EA-428d-A78A-D1F5659CBA93}\ShellFolder";
         private const uint homegroup_attribute_on = 2961441036;    // b084010c
         private const uint homegroup_attribute_off = 2962489612;   // b094010c
-                
 
+        private const string userfiles_hkcr = @"CLASSES_ROOT\CLSID\{59031a47-3f72-44a7-89c5-5595fe6b30ee}\ShellFolder";
+        private const string userfiles_hkcr_syswow64 = @"CLASSES_ROOT\Wow6432Node\CLSID\{59031a47-3f72-44a7-89c5-5595fe6b30ee}\ShellFolder";
+        private const string userfiles_hkcr_subkey = @"CLSID\{59031a47-3f72-44a7-89c5-5595fe6b30ee}\ShellFolder";
+        private const string userfiles_hkcr_syswow64_subkey = @"Wow6432Node\CLSID\{59031a47-3f72-44a7-89c5-5595fe6b30ee}\ShellFolder";
+        private const uint userfiles_attribute_on = 4035182893;      // f084012d
+        private const uint userfiles_attribute_off = 4036231469;     // f094012d
+
+
+        // Windows 10
+        private const string onedrive_hkcr = @"CLASSES_ROOT\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}\ShellFolder";
+        private const string onedrive_hkcr_syswow64 = @"CLASSES_ROOT\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}\ShellFolder";
+        private const string onedrive_hkcr_subkey = @"CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}\ShellFolder";
+        private const string onedrive_hkcr_syswow64_subkey = @"Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}\ShellFolder";
+        private const uint onedrive_attribute_on = 4034920525;      // f080004d
+        private const uint onedrive_attribute_off = 4035969101;      // f090004d
+
+        private const string quickaccess_hkcr = @"CLASSES_ROOT\CLSID\{679f85cb-0220-4080-b29b-5540cc05aab6}\ShellFolder";
+        private const string quickaccess_hkcr_syswow64 = @"CLASSES_ROOT\Wow6432Node\CLSID\{679f85cb-0220-4080-b29b-5540cc05aab6}\ShellFolder";
+        private const string quickaccess_hkcr_subkey = @"CLSID\{679f85cb-0220-4080-b29b-5540cc05aab6}\ShellFolder";
+        private const string quickaccess_hkcr_syswow64_subkey = @"Wow6432Node\CLSID\{679f85cb-0220-4080-b29b-5540cc05aab6}\ShellFolder";
+        private const uint quickaccess_attribute_on = 2685403136;      // a0100000
+        private const uint quickaccess_attribute_off = 2690646016;     // a0600000
        
         static void Main(string[] args)
         {
@@ -69,11 +90,17 @@ namespace Sinn.Wenpcfg
             bool bHideNetwork = false;
             bool bHideComputer = false;
             bool bHideHomeGroup = false;
+            bool bHideUserFiles = false;
+            bool bHideOneDrive = false;
+            bool bHideQuickAccess = false;
             bool bShowLibraries = false;
             bool bShowFavorites = false;
             bool bShowNetwork = false;
             bool bShowComputer = false;
             bool bShowHomeGroup = false;
+            bool bShowUserFiles = false;
+            bool bShowOneDrive = false;
+            bool bShowQuickAccess = false;
                         
             if (args.Length > 0)
             {
@@ -112,6 +139,21 @@ namespace Sinn.Wenpcfg
                                 Console.WriteLine("Config to hide home group icon: \tSET");
                                 break;
 
+                            case "hideuserfiles":
+                                bHideUserFiles = true;
+                                Console.WriteLine("Config to hide user files icon: \tSET");
+                                break;
+
+                            case "hideonedrive":
+                                bHideOneDrive = true;
+                                Console.WriteLine("Config to hide onedrive icon: \tSET");
+                                break;
+
+                            case "hidequickaccess":
+                                bHideQuickAccess = true;
+                                Console.WriteLine("Config to hide quick access icon: \tSET");
+                                break;
+
                             case "showlibraries":
                                 bShowLibraries = true;
                                 Console.WriteLine("Config to show libraries icon: \tSET");
@@ -135,6 +177,21 @@ namespace Sinn.Wenpcfg
                             case "showhomegroup":
                                 bShowHomeGroup = true;
                                 Console.WriteLine("Config to show home group icon: \tSET");
+                                break;
+
+                            case "showuserfiles":
+                                bShowUserFiles = true;
+                                Console.WriteLine("Config to show user files icon: \tSET");
+                                break;
+
+                            case "showonedrive":
+                                bShowOneDrive = true;
+                                Console.WriteLine("Config to show onedrive icon: \tSET");
+                                break;
+
+                            case "showquickaccess":
+                                bShowQuickAccess = true;
+                                Console.WriteLine("Config to show quick access icon: \tSET");
                                 break;
 
                             case "reboot":
@@ -209,6 +266,18 @@ namespace Sinn.Wenpcfg
                     {
                         HideHomeGroup();                        
                     }
+                    if (bHideUserFiles)
+                    {
+                        HideUserFiles();
+                    }
+                    if (bHideOneDrive)
+                    {
+                        HideOneDrive();
+                    }
+                    if (bHideQuickAccess)
+                    {
+                        HideQuickAccess();
+                    }
 
                     if (bShowLibraries)
                     {
@@ -229,6 +298,18 @@ namespace Sinn.Wenpcfg
                     if (bShowHomeGroup)
                     {
                         ShowHomeGroup();
+                    }
+                    if (bShowUserFiles)
+                    {
+                        ShowUserFiles();
+                    }
+                    if (bShowOneDrive)
+                    {
+                        ShowOneDrive();
+                    }
+                    if (bShowQuickAccess)
+                    {
+                        ShowQuickAccess();
                     }
 
                     if (bLogoff && !bReboot)
@@ -296,6 +377,15 @@ namespace Sinn.Wenpcfg
             Console.WriteLine("\t/HideHomeGroup \tHide home group icon in the navigation pane");
             Console.WriteLine("\t\t\tof Windows Explorer.");
 
+            Console.WriteLine("\t/HideUserFiles \tHide user files icon in the navigation pane");
+            Console.WriteLine("\t\t\tof Windows Explorer.");
+
+            Console.WriteLine("\t/HideOneDrive \tHide OnDrive icon in the navigation pane");
+            Console.WriteLine("\t\t\tof Windows Explorer (Experimental for Windows 10).");
+
+            Console.WriteLine("\t/HideQuickAccess \tHide quick access icon in the navigation pane");
+            Console.WriteLine("\t\t\tof Windows Explorer (Experimental for Windows 10).");
+
             Console.WriteLine("\t/ShowLibraries \tShow libraries icon in the navigation pane");
             Console.WriteLine("\t\t\tof Windows Explorer.");
 
@@ -310,6 +400,15 @@ namespace Sinn.Wenpcfg
 
             Console.WriteLine("\t/ShowHomeGroup \tShow home group icon in the navigation pane");
             Console.WriteLine("\t\t\tof Windows Explorer.");
+
+            Console.WriteLine("\t/ShowUserFiles \tShow user files icon in the navigation pane");
+            Console.WriteLine("\t\t\tof Windows Explorer.");
+
+            Console.WriteLine("\t/ShowOneDrive \tShow OneDrive icon in the navigation pane");
+            Console.WriteLine("\t\t\tof Windows Explorer (Experimental for Windows 10).");
+
+            Console.WriteLine("\t/ShowQuickAccess \tShow quick access icon in the navigation pane");
+            Console.WriteLine("\t\t\tof Windows Explorer (Experimental for Windows 10).");
 
             Console.WriteLine("\t/Logoff \tIn order to changes take effect the explorer");
             Console.WriteLine("\t\t\tshell process needs to be restarted. Specifying this");
@@ -334,7 +433,7 @@ namespace Sinn.Wenpcfg
             Console.WriteLine("");
             Console.WriteLine("");
             Console.WriteLine("Author:");
-            Console.WriteLine("\tAndreas Fleischmann (andreas.fleischmann@s-inn.de)");
+            Console.WriteLine("\tAndreas Fleischmann (andreas.fleischmann@prianto.com)");
             Console.WriteLine("");
 
 
@@ -420,9 +519,7 @@ namespace Sinn.Wenpcfg
                 SetRegkey(computer_hklm_syswow64, computer_attribute_off);
             }
             ExecSecedit(regkeyAclRead);
-        }
-
-       
+        }       
         private static void HideHomeGroup()
         {
             Dictionary<string, string> regkeyAclFull = new Dictionary<string, string>();
@@ -444,6 +541,94 @@ namespace Sinn.Wenpcfg
             }
             ExecSecedit(regkeyAclRead);
         }
+        private static void HideUserFiles()
+        {
+            Dictionary<string, string> regkeyAclFull = new Dictionary<string, string>();
+            Dictionary<string, string> regkeyAclRead = new Dictionary<string, string>();
+
+            regkeyAclFull.Add(userfiles_hkcr, acl_full);
+            regkeyAclRead.Add(userfiles_hkcr, acl_read);
+            if (is64bit)
+            {
+                regkeyAclFull.Add(userfiles_hkcr_syswow64, acl_full);
+                regkeyAclRead.Add(userfiles_hkcr_syswow64, acl_read);
+            }
+            ExecSecedit(regkeyAclFull);
+            SetRegkeyClassesRoot(userfiles_hkcr_subkey, userfiles_attribute_off);
+            if (is64bit)
+            {
+                SetRegkeyClassesRoot(userfiles_hkcr_syswow64_subkey, userfiles_attribute_off);
+            }
+            ExecSecedit(regkeyAclRead);
+        }
+
+        #region Windows 10
+        // Windows 10
+        private static void HideOneDrive()
+        {
+            Dictionary<string, string> regkeyAclFull = new Dictionary<string, string>();
+            Dictionary<string, string> regkeyAclRead = new Dictionary<string, string>();
+
+            regkeyAclFull.Add(onedrive_hkcr, acl_full);
+            regkeyAclRead.Add(onedrive_hkcr, acl_read);
+            if (is64bit)
+            {
+                regkeyAclFull.Add(onedrive_hkcr_syswow64, acl_full);
+                regkeyAclRead.Add(onedrive_hkcr_syswow64, acl_read);
+            }
+            ExecSecedit(regkeyAclFull);
+            SetRegkeyClassesRoot(onedrive_hkcr_subkey, onedrive_attribute_off);
+            if (is64bit)
+            {
+                SetRegkeyClassesRoot(onedrive_hkcr_syswow64_subkey, onedrive_attribute_off);
+            }
+            ExecSecedit(regkeyAclRead);
+        }
+
+        private static void HideQuickAccess()
+        {
+            Dictionary<string, string> regkeyAclFull = new Dictionary<string, string>();
+            Dictionary<string, string> regkeyAclRead = new Dictionary<string, string>();
+
+            regkeyAclFull.Add(quickaccess_hkcr, acl_full);
+            regkeyAclRead.Add(quickaccess_hkcr, acl_read);
+            if (is64bit)
+            {
+                regkeyAclFull.Add(quickaccess_hkcr_syswow64, acl_full);
+                regkeyAclRead.Add(quickaccess_hkcr_syswow64, acl_read);
+            }
+            ExecSecedit(regkeyAclFull);
+            SetRegkeyClassesRoot(quickaccess_hkcr_subkey, quickaccess_attribute_off);
+            if (is64bit)
+            {
+                SetRegkeyClassesRoot(quickaccess_hkcr_syswow64_subkey, quickaccess_attribute_off);
+            }
+            ExecSecedit(regkeyAclRead);
+        }
+
+        private static void SetExplorerLaunchTo_Computer()
+        {
+            RegistryKey usersKey = Registry.Users;
+            string[] userKeyNames = usersKey.GetSubKeyNames();
+            foreach (string userKeyName in userKeyNames)
+            {
+                RegistryKey explorerKey = usersKey.OpenSubKey(userKeyName + @"\SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\Advanced", true);
+
+                if (explorerKey != null)
+                {
+                    explorerKey.SetValue("LaunchTo", 1, RegistryValueKind.DWord);
+                    explorerKey.Close();
+                }
+                else
+                {
+                    Console.WriteLine("Warning: " + userKeyName + " not found.");
+                }
+            }                        
+        }
+        #endregion
+
+
+
         private static void ShowLibraries()
         {
             Dictionary<string, string> regkeyAclFull = new Dictionary<string, string>();
@@ -536,14 +721,74 @@ namespace Sinn.Wenpcfg
                 regkeyAclRead.Add(homegroup_hkcr_syswow64, acl_read);
             }
             ExecSecedit(regkeyAclFull);
-            SetRegkey(homegroup_hklm, network_attribute_on);
+            SetRegkey(homegroup_hklm, homegroup_attribute_on);
             if (is64bit)
             {
-                SetRegkey(homegroup_hklm_classes_syswow64, network_attribute_on);
-                SetRegkey(homegroup_hklm_syswow64, network_attribute_on);
+                SetRegkey(homegroup_hklm_classes_syswow64, homegroup_attribute_on);
+                SetRegkey(homegroup_hklm_syswow64, homegroup_attribute_on);
             }
             ExecSecedit(regkeyAclRead);
         }
+        private static void ShowUserFiles()
+        {
+            Dictionary<string, string> regkeyAclFull = new Dictionary<string, string>();
+            Dictionary<string, string> regkeyAclRead = new Dictionary<string, string>();
+            regkeyAclFull.Add(userfiles_hkcr, acl_full);
+            regkeyAclRead.Add(userfiles_hkcr, acl_read);
+            if (is64bit)
+            {
+                regkeyAclFull.Add(userfiles_hkcr_syswow64, acl_full);
+                regkeyAclRead.Add(userfiles_hkcr_syswow64, acl_read);
+            }
+            ExecSecedit(regkeyAclFull);
+            SetRegkeyClassesRoot(userfiles_hkcr_subkey, userfiles_attribute_on);
+            if (is64bit)
+            {
+                SetRegkeyClassesRoot(userfiles_hkcr_syswow64_subkey, userfiles_attribute_on);
+            }
+            ExecSecedit(regkeyAclRead);
+        }
+
+        #region Windows 10
+        private static void ShowOneDrive()
+        {
+            Dictionary<string, string> regkeyAclFull = new Dictionary<string, string>();
+            Dictionary<string, string> regkeyAclRead = new Dictionary<string, string>();
+            regkeyAclFull.Add(onedrive_hkcr, acl_full);
+            regkeyAclRead.Add(onedrive_hkcr, acl_read);
+            if (is64bit)
+            {
+                regkeyAclFull.Add(onedrive_hkcr_syswow64, acl_full);
+                regkeyAclRead.Add(onedrive_hkcr_syswow64, acl_read);
+            }
+            ExecSecedit(regkeyAclFull);
+            SetRegkeyClassesRoot(onedrive_hkcr_subkey, onedrive_attribute_on);
+            if (is64bit)
+            {
+                SetRegkeyClassesRoot(onedrive_hkcr_syswow64_subkey, onedrive_attribute_on);
+            }
+            ExecSecedit(regkeyAclRead);
+        }
+        private static void ShowQuickAccess()
+        {
+            Dictionary<string, string> regkeyAclFull = new Dictionary<string, string>();
+            Dictionary<string, string> regkeyAclRead = new Dictionary<string, string>();
+            regkeyAclFull.Add(quickaccess_hkcr, acl_full);
+            regkeyAclRead.Add(quickaccess_hkcr, acl_read);
+            if (is64bit)
+            {
+                regkeyAclFull.Add(quickaccess_hkcr_syswow64, acl_full);
+                regkeyAclRead.Add(quickaccess_hkcr_syswow64, acl_read);
+            }
+            ExecSecedit(regkeyAclFull);
+            SetRegkeyClassesRoot(quickaccess_hkcr_subkey, quickaccess_attribute_on);
+            if (is64bit)
+            {
+                SetRegkeyClassesRoot(quickaccess_hkcr_syswow64_subkey, quickaccess_attribute_on);
+            }
+            ExecSecedit(regkeyAclRead);
+        }
+        #endregion
 
         private static void ExecSecedit(Dictionary<string, string> regkeyAclList)
         {
@@ -579,6 +824,7 @@ namespace Sinn.Wenpcfg
             File.Delete(dummyDb);
                       
         }
+
         private static void SetRegkey(string subkey, uint attributesValue)
         {
             RegistryKey shellFolderKey = Registry.LocalMachine.OpenSubKey(subkey, true);
@@ -592,6 +838,21 @@ namespace Sinn.Wenpcfg
                 Console.WriteLine("Warning: " + subkey + " not found.");
             }
         }
+
+        private static void SetRegkeyClassesRoot(string subkey, uint attributesValue)
+        {
+            RegistryKey shellFolderKey = Registry.ClassesRoot.OpenSubKey(subkey, true);
+            if (shellFolderKey != null)
+            {
+                shellFolderKey.SetValue("Attributes", unchecked((int)attributesValue), RegistryValueKind.DWord);
+                shellFolderKey.Close();
+            }
+            else
+            {
+                Console.WriteLine("Warning: " + subkey + " not found.");
+            }
+        }
+
         private static void DeleteRegValue(string subkey)
         {
             RegistryKey shellFolderKey = Registry.LocalMachine.OpenSubKey(subkey,true);
@@ -601,6 +862,17 @@ namespace Sinn.Wenpcfg
                 shellFolderKey.Close();
             }
         }
+
+        private static void DeleteRegistryClassesRootValue(string subkey)
+        {
+            RegistryKey shellFolderKey = Registry.ClassesRoot.OpenSubKey(subkey, true);
+            if (shellFolderKey != null)
+            {
+                shellFolderKey.DeleteValue("Attributes", false);
+                shellFolderKey.Close();
+            }
+        }
+
         private static void RebootComputer()
         {
             Org.Mentalis.Utilities.WindowsController.ExitWindows(
