@@ -1,0 +1,74 @@
+Ausgangspunkt der ganzen Geschichte war einer unsere Kunden, ein ASP für Reiseveranstalter, der in seiner neuen Terminal Server Farm mit Server 2008 R2 die Favoriten, Bibliotheken und Co. ausgeblendet haben wollte.
+
+Nach kurzem Googeln bin ich schnell auf diverse Blogs und Foren gestoßen die entsprechene Registryeinstellungen beschreiben.
+In den entsprechenden Antworten und Kommentaren konnte man jedoch auch lesen, dass manche Registryeinstellungen gar nicht funktionierten  und andere Registryeinstellungen nicht 100%ig. 
+Z.B. nur unter Windows 7 x86 und möglicherweise nicht bei Datei-Öffnen-Dialog.
+
+Somit ging es in erster Linie mal darum jene Einstellungen heraus zu filtern, die überhaupt teilweise funktionieren können.
+Wenn man mal "Windows Internals" von Mark Russinovich  oder ähnliches gelesen hat, dann war der Schritt nicht so schwierig.
+Da es von Microsoft keine einfach Gruppenrichtlinie gab, die diese Aufgabe bewerkstelligen konnte, schied der Bereich HKEY_CURRENT_USER schon mal aus.  
+
+Manchmal konnte man von Einstellungen in HKEY_CLASSES_ROOT lesen und bei anderen unter HKEY_LOCAL_MACHINE Was HKEY_CLASSES_ROOT tatsächlich ist, kann man unter http://support.microsoft.com/kb/256986/en-us gut nachlesen.
+
+In der Vergangenheit hatte ich schon öfter mit Shell-Ordner und dessen GUIDs zu tun.
+http://www.s-inn.de/blog/post/Verwenden-von-Shell-Ordnern-in-der-triShell-der-triCerat-Simplify-Suite.aspx
+Somit waren mir diese Orte der Registry in ..\Classes\CLSID\... und überhaupt die ganze Shell-Ordner-Geschichte nicht ganz unbekannt.
+Einer der Prominentestens seit Windows 7 ist wohl ED7BA470-8E54-465E-825C-99712043E01C.
+ 
+In der Summe betrachtet, war dann eigentlich klar, dass die teilweise, funktionierenden Einstellungen unter HKEY_LOCAL_MACHINE\SOFTWARE\Classes\CLSID\... gefunden werden können.
+
+Zum Teil waren die entsprechenden CLSIDs in Blogs genannt, die restlichen findet man in der Registry mit Hilfe der englischen Begriffe "UserLibraries", "Favorites",....
+
+In den Blogs konnten man auch von dem Wertnamen "Attributes" lesen, der beim ein- bzw. ausschalten entsprechend geändert werden muss.
+Aus der vereinzelt angegebene, blanken Zahl konnte ich jedoch bis dato keine Regel ableiten.
+
+Aber dann ...
+In der Windows API gibt es das IShellfolder-Objekt und dessen GetAttributes-Of-Methode (http://msdn.microsoft.com/en-us/library/bb775068(v=vs.85).aspx). Sie liefert die Attribute es Shell-Ordners als Bitmask.
+Der Wert (also die blanke Zahl) des Wertnamens "Attributes" ist einfach diese Bitmask.  
+
+Welche Attribute so ein Shell-Ordner annehmen kann liest man unter http://msdn.microsoft.com/en-us/library/bb762589(v=vs.85).aspx.
+
+Eines der interessantesten Attribute ist hier sicherlich SFGO_NONENUMERATED 0x00100000.
+Also einfach zu Ausgangswert hinzugezählt und voila.
+
+Summa, Summarum, ... mit Hilfe vieler Blogs, ein wenig Knowhow über Shell-Ordner und der MSDN bekam ich einige passende Einstellungen.
+
+• Bibliotheken:
+Der passende Registrykey ist HKEY_LOCAL_MACHINE\SOFTWARE\Classes\CLSID\{031E4825-7B94-4dc3-B131-E946B44C8DD5}\ShellFolder.
+Zum Anzeigen muss der Wertname "Attributes" den Wert 0xb080010d haben.
+Zum Ausblenden muss der Wertname "Attributes" den Wert 0xb090010d haben.
+
+• Heimnetzgruppe:
+Der passende Registrykey ist HKEY_LOCAL_MACHINE\SOFTWARE\Classes\CLSID\{B4FB3F98-C1EA-428d-A78A-D1F5659CBA93}\ShellFolder.
+Zum Anzeigen muss der Wertname "Attributes" den Wert 0xb084010c haben.
+Zum Ausblenden muss der Wertname "Attributes" den Wert 0xb094010c haben.
+
+• Für die Favoriten, Computer und Netzwerk gibt es entsprechende Einträge .... 
+
+
+Beim Versuch, diese Einstellungen zu ändern stellte ich fest, dass man standardmäßig, auch als Admin auf dem System, diese Registrywerte nicht bearbeiten könnte, da die ACLs vom System so vorgegeben sind, dass auch ein Admin die Einstellungen nur lesen kann. Jedoch kann ein Admin die ACLs ändern, so dass er nachher die Einstellungen auch ändern kann.
+Zu Teil war dieses Verhalten auch in Blogs und Foren beschrieben.
+
+Nach dem diese Aufgaben erledigt waren, konnte ich feststellen, dass in einem normalen Explorer-Fenster auf einem Server 2008 R2 die Knoten ausgeblendet waren.
+Und auch wenn ich Notepad startetet und „Datei öffenen“ geklickt habe, waren die Knoten ausgeblendet.
+Ich war schon siegessicher …
+
+Ernüchterung machte sich breit, als ich „Datei öffnen“ in Microsoft Word klickte. Schwups und die Knoten waren alle da :-(
+
+Ich testete das noch bei diversen anderen Programmen. Bei manchen funktioniert es und bei manchen eben nicht.
+
+In der täglichen Arbeit habe ich viel mit Terminal Servern und der Eigenheit von Anwendungen auf Terminal Server zu tun.
+
+Deshalb ist mir die Regel, wann es funktioniert und wann eben nicht, schnell ins Auge gestochen.
+
+Es funktionierte zuverlässig bei 64-bit-Anwendungen und eben nicht bei Anwendungen, die im 32-bit-Kompatibilitätsmodus am Server 2008 R2 laufen.
+
+Daraufhin war die Geschichte eigentlich schon klar, weil ich den 32-bit-Kompatibiliätsmodus und die entsprechenden Internas der Registry mit den dazugehörigen Wow6432Node gut kannte.
+http://msdn.microsoft.com/en-us/library/cc704985(v=prot.10).aspx
+
+Ein kurzer Check mit Sysinternals‘ ProcessMonitor bestätigt die ganze Geschichte.
+
+Man musste also einfach noch die entsprechenden Einträge, die man unter HKEY_LOCAL_MACHINE\SOFTWARE\Classes\CLSID gemacht hatte, einfach nochmal unter HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Wow6432Node\CLSID nachtragen, welche automatisch auch noch vom Registry Redirector auf HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Classes\CLSID umgeleitet werden.
+
+
+Die ganze Frickelei in der 64-bit- und 32-bit-Registry inklusive ACLs-Änderung und ACL-Rückänderung in ein kleines Tool gepackt, das einfach noch berücksichtig, ob es auf einem 32-bit oder 64-bit-System läuft und schon ist WENPCFG fertig.
