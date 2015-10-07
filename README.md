@@ -31,6 +31,6 @@ After applying configuration changes you have to restart
 Explorer shell process (not only an explorer window).  
 Simply logoff and logon your windows session. 
 
-For further details check out the wenpcfg/docs directory.
+For further details check out [wenpcfg-Readme.pdf](https://github.com/andif888/wenpcfg/blob/master/wenpcfg/docs/wenpcfg-Readme.pdf).
 ### Download 
 To download and use wenpcfg then download [wenpcfg.zip](https://github.com/andif888/wenpcfg/blob/master/wenpcfg.zip)
